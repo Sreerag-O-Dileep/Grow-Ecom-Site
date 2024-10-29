@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export default async function ProductInfo({ product_id }: { product_id: string }) {
     const productData = await getProductById(product_id)
-    const { id, name, image, rating, reviews, originalprice: originalPrice, discountedprice: discountedPrice, discount, description, type } = productData;
+    const {name, image, rating, reviews, originalprice: originalPrice, discountedprice: discountedPrice, discount, description, type } = productData;
 
     // if (!productData) {
     //     notFound();
