@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import "./globals.css";
-import Header from "./ui/shared/header";
-import { primary_font } from "./ui/shared/fonts";
+import "@/styles/globals.css";
+import { primary_font } from "@/components/fonts";
+import Header from "@/components/header";
+
 
 export const metadata: Metadata = {
   title: "Grow",

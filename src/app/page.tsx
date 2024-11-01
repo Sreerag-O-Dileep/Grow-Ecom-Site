@@ -1,4 +1,4 @@
-import Banner from "@/app/ui/shared/banner";
+import Banner from "@/components/banner";
 
 export default function Page() {
   return (
