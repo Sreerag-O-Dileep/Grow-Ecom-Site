@@ -5,7 +5,7 @@ import { ProductType } from "@/lib/definitions";
 export async function GET(request: Request) {
   const searchParams = new URL(request.url).searchParams;
   console.log("searchParams",searchParams)
-  const { type, page = "1", query = "", sort = null, filter = null } = Object.fromEntries(searchParams.entries());
+  const { type, page, query, sort = null, filter = null } = Object.fromEntries(searchParams.entries());
 
   try {
       const [products, totalPages] = await Promise.all([

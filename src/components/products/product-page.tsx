@@ -1,6 +1,6 @@
 'use client';
 import useSWR from 'swr';
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { setItems, setPage, setSearchQuery } from "@/redux/product-slice";
@@ -25,12 +25,20 @@ export default function ProductPage({ type, currentPage, query }: ProductPagePro
         const url = new URL('/api/product', window.location.origin);
         url.searchParams.append('type', type);
         url.searchParams.append('page', String(currentPage));
-        query && url.searchParams.append('query', query);
-        filterCriteria?.sort && url.searchParams.append('sort', filterCriteria.sort);
-        filterCriteria?.filter?.length && url.searchParams.append('filter', filterCriteria.filter.join(','));
-
+    
+        if (query) {
+            url.searchParams.append('query', query);
+        }
+        if (filterCriteria?.sort) {
+            url.searchParams.append('sort', filterCriteria.sort);
+        }
+        if (filterCriteria?.filter?.length) {
+            url.searchParams.append('filter', filterCriteria.filter.join(','));
+        }
+    
         return url.toString();
     }, [type, currentPage, query, filterCriteria]);
+    
 
     const fetchProducts = (url: string) => fetch(url).then((res) => res.json());
 
