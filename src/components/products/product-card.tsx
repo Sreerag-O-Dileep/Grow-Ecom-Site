@@ -7,7 +7,7 @@ import { Product } from '@/lib/definitions';
 export default function ProductCard({ product }: { product: Product }) {
     const router = useRouter()
     const productType = { plant: 'plants', pot: 'planters', gift: 'gifting' };
-    const { id, name, image, rating, reviews, originalprice: originalPrice, discountedprice: discountedPrice, discount, description, type } = product;
+    const { id, name, image, rating, reviews, originalprice: originalPrice, discountedprice: discountedPrice, discount, description, usagetype, type } = product;
     const parentPage = productType[type];
 
     const handleMouseEnter = () => {
@@ -36,7 +36,8 @@ export default function ProductCard({ product }: { product: Product }) {
                         <span className="text-gray-500 line-through ml-2">₹{originalPrice}</span>
                         <span className="text-green-600 ml-2">({discount}% OFF)</span>
                     </div>
-                    <p className="text-gray-600 text-sm mb-4">{description}</p>
+                    <p className="text-gray-600 text-sm mb-2">{description}</p>
+                    <p className="text-green-600 text-sm mb-4">Type: {usagetype}</p>
                     <div className="flex flex-row gap-2">
                     <button className=" w-60 bg-orange-300 text-white py-2 rounded-lg hover:bg-orange-400 transition duration-200">
                         Add to Basket

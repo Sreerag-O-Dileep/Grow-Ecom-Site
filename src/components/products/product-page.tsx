@@ -1,5 +1,6 @@
-'use client'
-import { useEffect, useMemo, useState } from "react"; 
+'use client';
+import useSWR from 'swr';
+import { useCallback, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { setItems, setPage, setSearchQuery } from "@/redux/product-slice";
@@ -10,7 +11,6 @@ import { Filter } from "@/components/filter";
 import { ProductType } from "@/lib/definitions";
 import ProductCardLoader from "../skeleton-loader";
 
-
 interface ProductPageProps {
     currentPage: number;
     query: string;
@@ -20,42 +20,40 @@ interface ProductPageProps {
 export default function ProductPage({ type, currentPage, query }: ProductPageProps) {
     const dispatch = useDispatch();
     const { items, pagination, filterCriteria } = useSelector((state: RootState) => state.product);
-    const [loading, setLoading] = useState(false);
 
-    const fetchItems = async () => {
-        setLoading(true);
-        try {
-            const url = new URL('/api/product', window.location.origin);
-            url.searchParams.append('type', type);
-            url.searchParams.append('page', String(currentPage));
-            
-            if (query) url.searchParams.append('query', query);
-            if (filterCriteria?.sort) url.searchParams.append('sort', filterCriteria.sort);
-            if (filterCriteria?.filter.length > 0) url.searchParams.append('filter', filterCriteria.filter.join(','));
-            
-            const response = await fetch(url);
-            if (!response.ok) throw new Error('Failed to fetch items');
-            
-            const data = await response.json();
-            dispatch(setItems({ type, items: data.products, total: data.totalPages }));
-        } catch (error) {
-            console.error("Error fetching items:", error);
-        } finally {
-            setLoading(false);
-        }
-    };
+    const buildUrl = useCallback(() => {
+        const url = new URL('/api/product', window.location.origin);
+        url.searchParams.append('type', type);
+        url.searchParams.append('page', String(currentPage));
+        query && url.searchParams.append('query', query);
+        filterCriteria?.sort && url.searchParams.append('sort', filterCriteria.sort);
+        filterCriteria?.filter?.length && url.searchParams.append('filter', filterCriteria.filter.join(','));
+
+        return url.toString();
+    }, [type, currentPage, query, filterCriteria]);
+
+    const fetchProducts = (url: string) => fetch(url).then((res) => res.json());
+
+    const { data, error, isLoading } = useSWR(buildUrl, fetchProducts);
 
     useEffect(() => {
-        fetchItems();
+        if (data) {
+            dispatch(setItems({ type, items: data.products, total: data.totalPages }));
+        }
+    }, [data, dispatch, type]);
+
+    useEffect(() => {
         dispatch(setPage({ type, page: currentPage }));
         dispatch(setSearchQuery(query));
-    }, [currentPage, type, query, filterCriteria, dispatch]);
+    }, [currentPage, query, dispatch, type]);
 
-    const { heading, subHeading } = useMemo(() => ({
+    const headings = {
         plant: { heading: 'Plants', subHeading: 'Discover Your Perfect Green Companion' },
         pot: { heading: 'Planting Pots', subHeading: 'Find the Perfect Pot for Your Plants' },
         gift: { heading: 'Corporate Gift Hampers', subHeading: 'Give the Gift of Green: Corporate Plant Hampers for Every Need' },
-    }[type]), [type]);
+    };
+
+    const { heading, subHeading } = headings[type];
 
     return (
         <>
@@ -69,17 +67,21 @@ export default function ProductPage({ type, currentPage, query }: ProductPagePro
                     <Search placeholder={`Search ${heading}...`} />
                 </div>
             </div>
-            <div className="container mx-auto min-h-[calc(100vh-19.5rem)] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {loading ? (
+            <div className="container mx-auto min-h-[calc(100vh-23rem)] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {isLoading ? (
                     Array.from({ length: 8 }).map((_, index) => (
-                        <ProductCardLoader key={index}/>
-                    ))) : (
-                    items[type]?.map((product) => (
+                        <ProductCardLoader key={index} />
+                    ))
+                ) : error ? (
+                    <p className="col-span-full text-center mt-20">Error loading products.</p>
+                ) : items[type]?.length ? (
+                    items[type].map((product) => (
                         <ProductCard key={product.id} product={product} />
                     ))
+                ) : (
+                    <p className="col-span-full text-center mt-20">No products found.</p>
                 )}
             </div>
-
             <div className="mt-5 flex w-full justify-center">
                 <Pagination totalPages={pagination[type]?.total || 0} type={type} />
             </div>

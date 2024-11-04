@@ -1,4 +1,6 @@
-export type ProductType = 'plant' | 'pot' | 'gift'
+export type ProductType = 'plant' | 'pot' | 'gift';
+
+export type UsageType = 'indoor' | 'outdoor';
 
 export interface Product {
     id: number,
@@ -10,5 +12,6 @@ export interface Product {
     discountedprice: number,
     discount: number,
     description: string,
+    usagetype: UsageType,
     type: ProductType,
 }
