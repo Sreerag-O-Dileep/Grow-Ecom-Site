@@ -63,9 +63,9 @@ export function Filter() {
 
     return (
         <div className="relative h-full">
-            <Button type='icon-only' icon={filterIcon} onClick={toggleMenu} />
+            <Button type='icon-only' icon={filterIcon} onClick={toggleMenu}  className="flex items-center p-2 focus:outline-none"/>
             {openFilter && (
-                <div className="absolute left-0 md:right-0 bg-white rounded-lg shadow-md overflow-hidden p-4 w-60 z-10">
+                <div className="absolute md:right-0 bg-white rounded-lg shadow-md overflow-hidden p-4 w-60 z-10">
                     <p className="text-sm pb-2">Filter</p>
                     <hr />
                     <div className="my-4">

@@ -6,7 +6,6 @@ import { ProductType } from "@/lib/definitions";
 import ProductCardLoader from "@/components/skeleton-loader";
 import { fetchFilteredProducts, fetchFilteredProductsCount } from '@/lib/data';
 import TextSection from "@/components/texts";
-import { Suspense } from "react";
 
 interface ProductPageProps {
     currentPage: number;
@@ -31,7 +30,7 @@ export default async function ProductPage({ type, currentPage, query, category, 
     const { heading, subHeading } = headings[type];
 
     return (
-        <Suspense>
+        <>
             <div className="flex flex-col md:flex-row justify-between mb-4">
                 <div>
                     <TextSection textType='heading' className="mb-2" textContent={heading} />
@@ -58,6 +57,6 @@ export default async function ProductPage({ type, currentPage, query, category, 
             <div className="mt-5 flex w-full justify-center">
                 <Pagination totalPages={totalPages} type={type} />
             </div>
-        </Suspense>
+        </>
     );
 }
