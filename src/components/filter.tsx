@@ -1,13 +1,13 @@
 'use client'
 import { useEffect, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useDispatch } from "react-redux";
-import { setFilterCriteria } from "@/redux/product-slice";
+import Button from "@/components/button";
+import { filterIcon } from "@/public/icons";
+import ActionButtons from "./action-buttons";
 
 type SortType = string | null;
 
 export function Filter() {
-    const dispatch = useDispatch();
     const searchParams = useSearchParams();
     const pathname = usePathname();
     const { replace } = useRouter();
@@ -44,23 +44,28 @@ export function Filter() {
 
     useEffect(() => {
         const params = new URLSearchParams(searchParams);
+
         params.set('page', '1');
+
+        if (selectedOptions.length) {
+            params.set('category', selectedOptions.join(','));
+        } else {
+            params.delete('category');
+        }
+
+        if (selectedSort) {
+            params.set('sort', selectedSort);
+        } else {
+            params.delete('sort');
+        }
         replace(`${pathname}?${params.toString()}`);
-        dispatch(setFilterCriteria({ sort: selectedSort, filter: selectedOptions }))
     }, [selectedOptions, selectedSort]);
 
     return (
-        <div className="relative">
-            <button
-                onClick={toggleMenu}
-                className="flex items-center p-2 focus:outline-none"
-            >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
-                </svg>
-            </button>
+        <div className="relative h-full">
+            <Button type='icon-only' icon={filterIcon} onClick={toggleMenu} />
             {openFilter && (
-                <div className="absolute right-0 bg-white rounded-lg shadow-md overflow-hidden p-4 w-60 z-10">
+                <div className="absolute left-0 md:right-0 bg-white rounded-lg shadow-md overflow-hidden p-4 w-60 z-10">
                     <p className="text-sm pb-2">Filter</p>
                     <hr />
                     <div className="my-4">
@@ -91,14 +96,7 @@ export function Filter() {
                             </label>
                         ))}
                     </div>
-                    <div className="flex flex-row gap-2 text-sm mt-4">
-                        <button className="w-full bg-white py-1 rounded-lg hover:bg-gray-50 transition duration-200" onClick={cancel}>
-                            Cancel
-                        </button>
-                        <button className="w-full bg-orange-100 py-1 rounded-lg hover:bg-orange-200 transition duration-200" onClick={toggleMenu}>
-                            Done
-                        </button>
-                    </div>
+                    <ActionButtons slimButton={true} button1={{ buttonType: 'negative', label: 'Cancel', onClick: cancel }} button2={{ buttonType: 'primary', label: 'Done' , onClick: toggleMenu}} />
                 </div>
             )}
         </div>

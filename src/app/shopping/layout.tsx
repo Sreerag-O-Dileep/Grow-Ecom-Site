@@ -1,7 +1,5 @@
-'use client'
-import { Provider } from "react-redux";
-import store from "@/redux/store";
 import Navbar from "@/components/navbar";
+import { Suspense } from "react";
 
 export default function RootLayout({
     children,
@@ -9,11 +7,11 @@ export default function RootLayout({
     children: React.ReactNode;
 }) {
     return (
-        <Provider store={store}>
+        <Suspense>
             <Navbar />
             <div className="bg-slate-50 text-black p-8">
                 {children}
             </div>
-        </Provider>
+        </Suspense>
     );
 }

@@ -3,14 +3,14 @@ import { Product, ProductType } from "./definitions";
 
 const ITEMS_PER_PAGE = 8;
 
-export async function getProductById(id: string) {
+export async function getProductById(id: string): Promise<Product> {
   try {
     console.log(`Fetching plant data with id:${id}`);
     const data = await sql`
         SELECT * FROM products
         WHERE id = ${id}`;
     const productData = data.rows[0];
-    return productData;
+    return productData as Product;
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch product data.");
@@ -20,14 +20,14 @@ export async function getProductById(id: string) {
 export async function fetchFilteredProducts(
   type: ProductType,
   page: number,
-  filter?: string,
+  category?: string | null,
   sort?: string | null,
   query?: string
 ): Promise<Product[]> {
   try {
     const offset = (page - 1) * ITEMS_PER_PAGE;
     console.log(
-      `Fetching product data with type:${type}, offset:${offset}, query:${query}, filter:${filter}, sort:${sort}`
+      `Fetching product data with type:${type}, offset:${offset}, query:${query}, category:${category}, sort:${sort}`
     );
     const sortOrder =
       sort === "Price low to high"
@@ -40,13 +40,12 @@ export async function fetchFilteredProducts(
     const whereConditions = [`type = $1`];
     queryParams.push(type);
 
-    const filterArray = filter?.split(",").map((item) => item.toLowerCase());
-
-    if (filterArray && filterArray.length) {
+    const categoryArray = category?.split(",").map((item) => item.toLowerCase());
+    if (categoryArray && categoryArray.length) {
       whereConditions.push(
-        `usagetype IN (${filterArray.map((_, i) => `$${i + 2}`).join(", ")})`
+        `usagetype IN (${categoryArray.map((_, i) => `$${i + 2}`).join(", ")})`
       );
-      queryParams.push(...filterArray);
+      queryParams.push(...categoryArray);
     }
     if (query) {
       whereConditions.push(`name ILIKE $${queryParams.length + 1}`);
@@ -64,9 +63,6 @@ export async function fetchFilteredProducts(
 
     queryParams.push(ITEMS_PER_PAGE, offset);
 
-    console.log({
-      query: `${baseQuery} ${whereCondition} ${sortCondition} ${pagination} ${queryParams}`,
-    });
     const sqlQuery = `
         ${baseQuery}
         ${whereCondition}
@@ -83,25 +79,25 @@ export async function fetchFilteredProducts(
 
 export async function fetchFilteredProductsCount(
   type: ProductType,
-  filter?: string,
+  category?: string | null,
   query?: string
 ) {
   try {
     console.log(
-      `Fetching product count with type:${type}, query:${query}, filter:${filter}`
+      `Fetching product count with type:${type}, query:${query}, filter:${category}`
     );
     const queryParams = [];
     const baseQuery = `SELECT COUNT(*) FROM products`;
     const whereConditions = [`type = $1`];
     queryParams.push(type);
 
-    const filterArray = filter?.split(",").map((item) => item.toLowerCase());
+    const categoryArray = category?.split(",").map((item) => item.toLowerCase());
 
-    if (filterArray && filterArray.length) {
+    if (categoryArray && categoryArray.length) {
       whereConditions.push(
-        `usagetype IN (${filterArray.map((_, i) => `$${i + 2}`).join(", ")})`
+        `usagetype IN (${categoryArray.map((_, i) => `$${i + 2}`).join(", ")})`
       );
-      queryParams.push(...filterArray);
+      queryParams.push(...categoryArray);
     }
     if (query) {
       whereConditions.push(`name ILIKE $${queryParams.length + 1}`);
@@ -114,6 +110,9 @@ export async function fetchFilteredProductsCount(
     ${baseQuery}
     ${whereCondition}
     `;
+    console.log({
+      query: `${baseQuery} ${whereCondition} ${queryParams}`,
+    });
     const data = await sql.query(sqlQuery, queryParams);
     const totalPages = Math.ceil(Number(data.rows[0].count) / ITEMS_PER_PAGE);
     return totalPages;

@@ -4,10 +4,12 @@ interface PageProps {
     searchParams?: {
         query?: string;
         page?: string;
+        category?: string;
+        sort?: string;
     };
 }
 export default function page({ searchParams }: PageProps) {
-    const currentPage = Number(searchParams?.page) || 1;
-    const query = searchParams?.query || '';
-    return <ProductPage type={'gift'} currentPage={currentPage} query={query} />
+    const { page = 1, query = '', category = null, sort = null } = searchParams || {};
+
+    return <ProductPage type={'gift'} currentPage={Number(page)} query={query} category={category} sort={sort} />
 }

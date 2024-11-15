@@ -1,12 +1,12 @@
 'use client'
 import clsx from 'clsx';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useDispatch } from 'react-redux';
-import { setFilterCriteria } from '@/redux/product-slice';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 export default function Navbar() {
-    const dispatch = useDispatch();
+    const searchParams = useSearchParams();
+    const pathname = usePathname();
+    const { replace } = useRouter();
 
     const links = [
         { name: 'Plants', href: '/shopping/plants' },
@@ -17,9 +17,15 @@ export default function Navbar() {
     ];
     const pathName = usePathname();
 
-    const clearFilters = () =>{
-        dispatch(setFilterCriteria({ sort: null, filter: [] }))
+    const clearFilters = () => {
+        const params = new URLSearchParams(searchParams);
+        params.set('page', '1');
+        params.delete('query');
+        params.delete('category');
+        params.delete('sort');
+        replace(`${pathname}?${params.toString()}`);
     }
+
     return (
         <nav className="flex flex-row gap-4 md:gap-16 h-16 items-center w-full px-4 md:px-8 text-sm md:text-base bg-white text-black shadow-2xl">
             {links.map((link) => {

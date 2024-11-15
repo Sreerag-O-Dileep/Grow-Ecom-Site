@@ -1,8 +1,8 @@
 'use client';
-import { useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
 import clsx from 'clsx';
 import Link from 'next/link';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 import { generatePagination } from '@/lib/utils';
 import { ProductType } from '@/lib/definitions';
@@ -10,8 +10,10 @@ import { ProductType } from '@/lib/definitions';
 export default function Pagination({ totalPages }: { type: ProductType; totalPages: number }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const { replace } = useRouter();
+
   const currentPage = Number(searchParams.get('page')) || 1;
-  
+
   const allPages = useMemo(() => generatePagination(currentPage, totalPages), [currentPage, totalPages]);
 
   const createPageURL = (pageNumber: number | string) => {
@@ -19,6 +21,10 @@ export default function Pagination({ totalPages }: { type: ProductType; totalPag
     params.set('page', pageNumber.toString());
     return `${pathname}?${params.toString()}`;
   };
+
+  useEffect(() => {
+    replace(createPageURL(currentPage));
+  }, [currentPage]);
 
   return (
     <div className="inline-flex">
