@@ -7,6 +7,9 @@ const meta = {
   component: Navbar,
   parameters: {
     layout: 'centered',
+    nextjs: {
+      appDirectory: true,
+    },
   },
   tags: ['autodocs'],
 } satisfies Meta<typeof Navbar>;

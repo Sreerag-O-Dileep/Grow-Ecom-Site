@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { Filter } from '@/components/filter'; 
+import Search from '@/components/search';
 
 const meta = {
-  title: 'Organisms/Filter',
-  component: Filter,
+  title: 'Organisms/Search',
+  component: Search,
   parameters: {
     layout: 'centered',
     nextjs: {
@@ -11,12 +11,17 @@ const meta = {
     },
   },
   tags: ['autodocs'],
-} satisfies Meta<typeof Filter>;
+} satisfies Meta<typeof Search>;
 
 export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const DefaultFilter: Story = {
-  args: {},
+export const DefaultSearch: Story = {
+  args: { placeholder: 'Plants' }
 };
+
+
+
+
+

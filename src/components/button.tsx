@@ -23,6 +23,7 @@ const Button = ({ type, label, slim = false, icon, onClick, disabled = false, cl
                     "bg-green-600 hover:bg-green-700": type === "primary",
                     "bg-gray-600 hover:bg-gray-700": type === "secondary",
                     "bg-red-600 hover:bg-red-700": type === "negative",
+                    "hover:bg-gray-100 p-1": type === "icon-only",
                     "py-1 md:py-2": slim,
                     "py-2 md:py-3": !slim && type !== 'icon-only',
                     "px-5 md:px-7": type !== 'icon-only'

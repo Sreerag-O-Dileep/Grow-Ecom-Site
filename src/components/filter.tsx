@@ -2,8 +2,8 @@
 import { useEffect, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Button from "@/components/button";
-import { filterIcon } from "@/public/icons";
 import ActionButtons from "./action-buttons";
+import { AdjustmentsHorizontalIcon } from '@heroicons/react/24/outline';
 
 type SortType = string | null;
 
@@ -63,7 +63,7 @@ export function Filter() {
 
     return (
         <div className="relative h-full">
-            <Button type='icon-only' icon={filterIcon} onClick={toggleMenu}  className="flex items-center p-2 focus:outline-none"/>
+            <Button type='icon-only' icon={<AdjustmentsHorizontalIcon className="h-6 w-6 text-black" />} onClick={toggleMenu} />
             {openFilter && (
                 <div className="absolute md:right-0 bg-white rounded-lg shadow-md overflow-hidden p-4 w-60 z-10">
                     <p className="text-sm pb-2">Filter</p>
@@ -96,7 +96,7 @@ export function Filter() {
                             </label>
                         ))}
                     </div>
-                    <ActionButtons slimButton={true} button1={{ buttonType: 'negative', label: 'Cancel', onClick: cancel }} button2={{ buttonType: 'primary', label: 'Done' , onClick: toggleMenu}} />
+                    <ActionButtons slimButton={true} button1={{ buttonType: 'negative', label: 'Cancel', onClick: cancel }} button2={{ buttonType: 'primary', label: 'Done', onClick: toggleMenu }} />
                 </div>
             )}
         </div>

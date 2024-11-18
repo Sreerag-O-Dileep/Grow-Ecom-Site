@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 
 import Button  from '@/components/button';
-import { filterIcon } from '@/public/icons';
+import { AdjustmentsHorizontalIcon } from '@heroicons/react/24/outline';
 
 const meta = {
   title: 'Atoms/Button',
@@ -41,7 +41,7 @@ export const Negative: Story = {
 export const IconOnly: Story = {
   args: {
     type: 'icon-only',
-    icon: filterIcon
+    icon: <AdjustmentsHorizontalIcon className="h-6 w-6 text-black" />,  
   },
 };
 

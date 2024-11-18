@@ -8,6 +8,9 @@ const meta = {
   component: CartIcon,
   parameters: {
     layout: 'centered',
+    backgrounds: {
+      default: 'dark', 
+    },
   },
   tags: ['autodocs'],
 } satisfies Meta<typeof CartIcon>;

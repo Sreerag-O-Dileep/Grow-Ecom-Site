@@ -4,7 +4,7 @@ import CartIcon from './cart-icon';
 
 export default function Header() {
     return (
-        <header className="bg-transparent text-white">
+        <header className="bg-transparent text-white w-full">
             <div className="container mx-auto flex justify-between items-center py-8 px-6">
                 <div className="flex-shrink-0">
                     <Image

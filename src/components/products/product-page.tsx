@@ -31,7 +31,7 @@ export default async function ProductPage({ type, currentPage, query, category, 
 
     return (
         <>
-            <div className="flex flex-col md:flex-row justify-between mb-4">
+            <div className="flex flex-col md:flex-row justify-between  items-center mb-4">
                 <div>
                     <TextSection textType='heading' className="mb-2" textContent={heading} />
                     <TextSection textType='description' className="mb-2" textContent={subHeading} />

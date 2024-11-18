@@ -1,10 +1,10 @@
 interface PriceTextProps {
     originalPrice: number;
     discountedPrice: number;
-    discount: number;
+    discount?: number;
     className?: string;
 }
-const PriceText = ({ originalPrice, discountedPrice, discount, className = '' }: PriceTextProps) => {
+const PriceText = ({ originalPrice, discountedPrice, discount = 0, className = '' }: PriceTextProps) => {
     return (
         <div className={className}>
             <span className="text-xl font-bold text-red-600">₹{discountedPrice}</span>
